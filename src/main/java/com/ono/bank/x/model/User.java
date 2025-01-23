@@ -8,6 +8,7 @@ import lombok.Setter;
 import java.util.Set;
 
 @Entity
+@Table(name = "app_user")
 public class User {
 
     @Id
@@ -15,13 +16,15 @@ public class User {
     private Long id;
 
     private String username;
-    private String password; // Encrypted password
+    private String password;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany
+    @JoinTable(
+            name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
     private Set<Role> roles;
-
-    @OneToOne(mappedBy = "user")
-    private Customer customer;
 
     public Long getId() {
         return id;
@@ -53,13 +56,5 @@ public class User {
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
-    }
-
-    public Customer getCustomer() {
-        return customer;
-    }
-
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
     }
 }

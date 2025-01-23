@@ -10,13 +10,11 @@ public class Role {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false)
-    private String name;  // Role name (e.g., "ROLE_USER")
+    private String name;
 
-    @ManyToMany(mappedBy = "roles")
-    private Set<User> users;  // Users that have this role
+    @ManyToMany(mappedBy = "roles")  // This should refer to the 'roles' property in the User entity
+    private Set<User> users;
 
-    // Getters and Setters
     public Long getId() {
         return id;
     }

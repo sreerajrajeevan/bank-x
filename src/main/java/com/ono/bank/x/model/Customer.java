@@ -28,7 +28,7 @@ public class Customer {
     private String phoneNumber;
     private String address;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private User user;  // Link to the User entity for authentication
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)

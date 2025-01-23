@@ -1,10 +1,12 @@
 package com.ono.bank.x.model;
 
+import com.ono.bank.x.enums.TransactionType;
 import lombok.Getter;
 import lombok.Setter;
 
 import jakarta.persistence.*;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -14,12 +16,19 @@ public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Date timestamp;
+
     private BigDecimal amount;
-    private String type;
-    private BigDecimal fee;
+
     @ManyToOne
+    @JoinColumn(name = "account_id", nullable = false)
     private Account account;
+
+    @Enumerated(EnumType.STRING)
+    private TransactionType transactionType;
+
+    private BigDecimal fee;
+
+    private LocalDateTime timestamp;
 
     public Long getId() {
         return id;
@@ -27,14 +36,6 @@ public class Transaction {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Date getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(Date timestamp) {
-        this.timestamp = timestamp;
     }
 
     public BigDecimal getAmount() {
@@ -45,12 +46,20 @@ public class Transaction {
         this.amount = amount;
     }
 
-    public String getType() {
-        return type;
+    public Account getAccount() {
+        return account;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setAccount(Account account) {
+        this.account = account;
+    }
+
+    public TransactionType getTransactionType() {
+        return transactionType;
+    }
+
+    public void setTransactionType(TransactionType transactionType) {
+        this.transactionType = transactionType;
     }
 
     public BigDecimal getFee() {
@@ -61,11 +70,11 @@ public class Transaction {
         this.fee = fee;
     }
 
-    public Account getAccount() {
-        return account;
+    public LocalDateTime getTimestamp() {
+        return timestamp;
     }
 
-    public void setAccount(Account account) {
-        this.account = account;
+    public void setTimestamp(LocalDateTime timestamp) {
+        this.timestamp = timestamp;
     }
 }

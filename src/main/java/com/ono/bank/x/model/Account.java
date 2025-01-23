@@ -1,6 +1,7 @@
 package com.ono.bank.x.model;
 
 
+import com.ono.bank.x.enums.AccountType;
 import jakarta.persistence.*;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -9,16 +10,26 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String accountType; // "Current" or "Savings"
-    private BigDecimal balance;
+
+    @Enumerated(EnumType.STRING)
+    private AccountType accountType;
+
+    private BigDecimal balance = BigDecimal.ZERO;
+
     @ManyToOne
+    @JoinColumn(name = "customer_id", nullable = false)
     private Customer customer;
+
+    @OneToMany(mappedBy = "account")
+    private List<Transaction> transactions = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -28,11 +39,11 @@ public class Account {
         this.id = id;
     }
 
-    public String getAccountType() {
+    public AccountType getAccountType() {
         return accountType;
     }
 
-    public void setAccountType(String accountType) {
+    public void setAccountType(AccountType accountType) {
         this.accountType = accountType;
     }
 
@@ -50,5 +61,13 @@ public class Account {
 
     public void setCustomer(Customer customer) {
         this.customer = customer;
+    }
+
+    public List<Transaction> getTransactions() {
+        return transactions;
+    }
+
+    public void setTransactions(List<Transaction> transactions) {
+        this.transactions = transactions;
     }
 }
