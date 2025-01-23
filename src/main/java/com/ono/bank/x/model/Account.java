@@ -1,6 +1,7 @@
 package com.ono.bank.x.model;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.ono.bank.x.enums.AccountType;
 import jakarta.persistence.*;
 import jakarta.persistence.GeneratedValue;
@@ -26,6 +27,7 @@ public class Account {
 
     @ManyToOne
     @JoinColumn(name = "customer_id", nullable = false)
+    @JsonBackReference
     private Customer customer;
 
     @OneToMany(mappedBy = "account")

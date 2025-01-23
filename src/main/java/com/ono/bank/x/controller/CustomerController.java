@@ -2,12 +2,15 @@ package com.ono.bank.x.controller;
 
 
 import com.ono.bank.x.model.Customer;
+import com.ono.bank.x.model.CustomerResponse;
 import com.ono.bank.x.model.Transaction;
 import com.ono.bank.x.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.math.BigDecimal;
 
 @RestController
@@ -18,8 +21,8 @@ public class CustomerController {
     private CustomerService customerService;
 
     @PostMapping("/onboard")
-    public ResponseEntity<Customer> onboardCustomer(@RequestBody Customer customer) {
-        Customer onboardedCustomer = customerService.onboardCustomer(customer);
+    public ResponseEntity<CustomerResponse> onboardCustomer(@RequestBody Customer customer) {
+        CustomerResponse onboardedCustomer = customerService.onboardCustomer(customer);
         return ResponseEntity.ok(onboardedCustomer);
     }
 

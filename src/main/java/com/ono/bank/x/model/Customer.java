@@ -1,5 +1,6 @@
 package com.ono.bank.x.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.Entity;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -24,7 +25,8 @@ public class Customer {
     private String email;  // Customer's email
 
     @NotNull(message = "Phone number cannot be null")
-    @Pattern(regexp = "^[0-9]{10}$", message = "Phone number must be a 10-digit number")
+    @NotBlank(message = "Phone number cannot be empty")
+    @Pattern(regexp = "^\\d{10}$", message = "Phone number must be a 10-digit number")
     private String phoneNumber;
     private String address;
 
@@ -32,6 +34,7 @@ public class Customer {
     private User user;  // Link to the User entity for authentication
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<Account> accounts;  // Customer's accounts (Current & Savings)
 
     public Long getId() {
