@@ -3,10 +3,14 @@ package com.ono.bank.x.model;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.Entity;
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-import javax.validation.constraints.*;
 import java.util.List;
 
 @Entity
@@ -19,9 +23,11 @@ public class Customer {
     private Long id;
 
     @Column(nullable = false)
+    @NotBlank(message = "Name is mandatory")
     private String name;  // Customer's name
 
     @Column(unique = true, nullable = false)
+    @Email(message = "Email is mandatory")
     private String email;  // Customer's email
 
     @NotNull(message = "Phone number cannot be null")
@@ -31,6 +37,8 @@ public class Customer {
     private String address;
 
     @OneToOne(cascade = CascadeType.ALL)
+    @NotNull(message = "User details are required")
+    @Valid
     private User user;  // Link to the User entity for authentication
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)

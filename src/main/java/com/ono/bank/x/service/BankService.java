@@ -1,15 +1,18 @@
 package com.ono.bank.x.service;
 
+import com.ono.bank.x.dto.TransferRequest;
 import com.ono.bank.x.enums.AccountType;
 import com.ono.bank.x.enums.TransactionType;
-import com.ono.bank.x.exception.CustomerAlreadyExistsException;
+import com.ono.bank.x.exception.CustomerException;
+import com.ono.bank.x.exception.TransactionException;
 import com.ono.bank.x.model.Account;
 import com.ono.bank.x.model.Customer;
-import com.ono.bank.x.model.CustomerResponse;
+import com.ono.bank.x.dto.CustomerResponse;
 import com.ono.bank.x.model.Transaction;
 import com.ono.bank.x.repository.AccountRepository;
 import com.ono.bank.x.repository.CustomerRepository;
 import com.ono.bank.x.repository.TransactionRepository;
+import com.ono.bank.x.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,13 +20,16 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
-public class CustomerService {
+public class BankService {
 
     @Autowired
     private CustomerRepository customerRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private AccountRepository accountRepository;
@@ -36,27 +42,28 @@ public class CustomerService {
         CustomerResponse customerResponse = new CustomerResponse();
         Optional<Customer> existingCustomer = customerRepository.findByEmail(customer.getEmail());
         if (existingCustomer.isPresent()) {
-            throw new CustomerAlreadyExistsException("A customer with this email already exists: " + customer.getEmail());
+            throw new CustomerException("A customer with this email already exists: " + customer.getEmail());
         }
-        // Save customer first
+        if(customer.getUser()!=null){
+            userRepository.save(customer.getUser());
+        }
         customer = customerRepository.save(customer);
 
-        // Create Current and Savings accounts
+        // curr account
         Account currentAccount = new Account();
         currentAccount.setAccountType(AccountType.CURRENT);
         currentAccount.setBalance(BigDecimal.ZERO);
         currentAccount.setCustomer(customer);
         accountRepository.save(currentAccount);
-
+        // sav acc
         Account savingsAccount = new Account();
         savingsAccount.setAccountType(AccountType.SAVINGS);
-        savingsAccount.setBalance(BigDecimal.valueOf(500));  // Joining bonus
+        savingsAccount.setBalance(BigDecimal.valueOf(500));
         savingsAccount.setCustomer(customer);
         accountRepository.save(savingsAccount);
 
-        // Add accounts to customer
         //customer.setAccounts(List.of(currentAccount, savingsAccount));
-        customer.setAccounts(new ArrayList<>(List.of(currentAccount, savingsAccount)));  // Mutable List
+        customer.setAccounts(new ArrayList<>(List.of(currentAccount, savingsAccount)));
         customerRepository.save(customer);
         customerResponse.setName(customer.getName());
         customerResponse.setEmail(customer.getEmail());
@@ -68,10 +75,16 @@ public class CustomerService {
         return customerResponse;
     }
 
-    // Transfer money between accounts
-    public Transaction transferMoney(Long fromAccountId, Long toAccountId, BigDecimal amount) {
-        Account fromAccount = accountRepository.findById(fromAccountId).orElseThrow();
-        Account toAccount = accountRepository.findById(toAccountId).orElseThrow();
+    public Transaction transferMoney(TransferRequest transferRequest) {
+        Account fromAccount = accountRepository.findById(transferRequest.getFromAccountId()).orElseThrow();
+        Account toAccount = accountRepository.findById(transferRequest.getToAccountId()).orElseThrow();
+        BigDecimal amount = transferRequest.getAmount();
+        if(Objects.equals(fromAccount.getId(), toAccount.getId())){
+            throw new TransactionException("You cannot transfer money to your own account");
+        }
+        if ("SAVINGS".equals(fromAccount.getAccountType())) {
+            throw new TransactionException("You cannot transfer from savings account.");
+        }
 
         // Apply transaction fees and transfer
         BigDecimal fee = amount.multiply(BigDecimal.valueOf(0.0005));  // 0.05% fee

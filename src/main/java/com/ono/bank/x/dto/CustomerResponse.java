@@ -1,4 +1,6 @@
-package com.ono.bank.x.model;
+package com.ono.bank.x.dto;
+
+import com.ono.bank.x.model.Account;
 
 import java.util.List;
 

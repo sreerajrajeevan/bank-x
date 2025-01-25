@@ -1,6 +1,7 @@
 package com.ono.bank.x.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,8 +15,9 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    @NotBlank(message = "provide valid username")
     private String username;
+    @NotBlank(message = "password cannot be null")
     private String password;
 
     @ManyToMany
