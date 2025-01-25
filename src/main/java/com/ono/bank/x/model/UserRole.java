@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import java.util.Set;
 
 @Entity
-public class Role {
+public class UserRole {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -12,8 +12,19 @@ public class Role {
 
     private String name;
 
-    @ManyToMany(mappedBy = "roles")  // This should refer to the 'roles' property in the User entity
-    private Set<User> users;
+    @ManyToMany(mappedBy = "userRoles")
+    private Set<AppUser> appUsers;
+
+    // Constructors
+
+    public UserRole() {
+    }
+
+    public UserRole(String name) {
+        this.name = name;
+    }
+
+    // Getters and Setters
 
     public Long getId() {
         return id;
@@ -31,12 +42,11 @@ public class Role {
         this.name = name;
     }
 
-    public Set<User> getUsers() {
-        return users;
+    public Set<AppUser> getAppUsers() {
+        return appUsers;
     }
 
-    public void setUsers(Set<User> users) {
-        this.users = users;
+    public void setAppUsers(Set<AppUser> appUsers) {
+        this.appUsers = appUsers;
     }
 }
-

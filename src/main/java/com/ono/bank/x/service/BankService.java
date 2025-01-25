@@ -14,6 +14,7 @@ import com.ono.bank.x.repository.CustomerRepository;
 import com.ono.bank.x.repository.TransactionRepository;
 import com.ono.bank.x.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -36,6 +37,9 @@ public class BankService {
 
     @Autowired
     private TransactionRepository transactionRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
 
     // Method to onboard a new customer with Current and Savings accounts
     public CustomerResponse onboardCustomer(Customer customer) {
@@ -45,6 +49,8 @@ public class BankService {
             throw new CustomerException("A customer with this email already exists: " + customer.getEmail());
         }
         if(customer.getUser()!=null){
+            String encodedPassword = passwordEncoder.encode(customer.getUser().getPassword());
+            customer.getUser().setPassword(encodedPassword);
             userRepository.save(customer.getUser());
         }
         customer = customerRepository.save(customer);

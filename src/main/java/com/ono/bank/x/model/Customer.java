@@ -8,7 +8,6 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import java.util.List;
@@ -39,7 +38,7 @@ public class Customer {
     @OneToOne(cascade = CascadeType.ALL)
     @NotNull(message = "User details are required")
     @Valid
-    private User user;  // Link to the User entity for authentication
+    private AppUser appUser;  // Link to the User entity for authentication
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
     @JsonManagedReference
@@ -85,12 +84,12 @@ public class Customer {
         this.address = address;
     }
 
-    public User getUser() {
-        return user;
+    public AppUser getUser() {
+        return appUser;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUser(AppUser appUser) {
+        this.appUser = appUser;
     }
 
     public List<Account> getAccounts() {

@@ -2,22 +2,24 @@ package com.ono.bank.x.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "app_user")
-public class User {
+public class AppUser {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotBlank(message = "provide valid username")
+
+    @NotBlank(message = "Provide valid username")
     private String username;
-    @NotBlank(message = "password cannot be null")
+
+    @NotBlank(message = "Password cannot be null")
     private String password;
 
     @ManyToMany
@@ -26,7 +28,9 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
-    private Set<Role> roles;
+    private Set<UserRole> userRoles;
+
+    // Getters and Setters
 
     public Long getId() {
         return id;
@@ -52,11 +56,20 @@ public class User {
         this.password = password;
     }
 
-    public Set<Role> getRoles() {
-        return roles;
+    // Getter for userRoles
+    public Set<UserRole> getUserRoles() {
+        return userRoles;
     }
 
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
+    public void setUserRoles(Set<UserRole> userRoles) {
+        this.userRoles = userRoles;
+    }
+
+    // Method to get authorities (roles)
+    public Set<GrantedAuthority> getAuthorities() {
+        // Convert UserRole objects to GrantedAuthority (SimpleGrantedAuthority)
+        return userRoles.stream()
+                .map(role -> new SimpleGrantedAuthority(role.getName()))  // Assuming UserRole has a getName() method
+                .collect(Collectors.toSet());
     }
 }
