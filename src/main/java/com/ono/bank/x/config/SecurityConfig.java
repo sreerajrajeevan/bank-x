@@ -47,16 +47,21 @@ public class SecurityConfig{
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(AbstractHttpConfigurer::disable)
+                .csrf(csrf -> csrf
+                        .ignoringRequestMatchers("/h2-console/**")
+                        .ignoringRequestMatchers("bankx/customers/**")
+                )
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/login", "/register").permitAll()  // Allow these endpoints to be accessed without authentication
-                        .requestMatchers(HttpMethod.GET, "/public/**").permitAll()
-                        .anyRequest().authenticated()  // Require authentication for other requests
+                        .requestMatchers("/bankx/customers/login", "bankx/customers/onboard/**", "/h2-console/**").permitAll()
+                        .anyRequest().authenticated()
+                )
+                .headers(AbstractHttpConfigurer::disable
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class); // Add JWT filter before default auth filter
 
         return http.build();
     }
+
 
 
 

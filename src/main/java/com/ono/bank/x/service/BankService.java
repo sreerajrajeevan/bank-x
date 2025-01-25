@@ -6,6 +6,7 @@ import com.ono.bank.x.enums.TransactionType;
 import com.ono.bank.x.exception.CustomerException;
 import com.ono.bank.x.exception.TransactionException;
 import com.ono.bank.x.model.Account;
+import com.ono.bank.x.model.AppUser;
 import com.ono.bank.x.model.Customer;
 import com.ono.bank.x.dto.CustomerResponse;
 import com.ono.bank.x.model.Transaction;
@@ -124,6 +125,20 @@ public class BankService {
             accountRepository.save(account);
         }
     }
+
+    public boolean validateCustomerCredentials(AppUser customer) {
+        // Example validation (replace with your actual logic)
+        Optional<AppUser> storedCustomer = userRepository.findByUsername(customer.getUsername());
+        if (storedCustomer.isPresent()) {
+            AppUser storedUser = storedCustomer.get();
+            // Use PasswordEncoder to match hashed password
+            if (passwordEncoder.matches(customer.getPassword(), storedUser.getPassword())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
 }
 
