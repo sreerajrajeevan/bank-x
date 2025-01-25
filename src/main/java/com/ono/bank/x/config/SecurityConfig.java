@@ -52,7 +52,7 @@ public class SecurityConfig{
                         .ignoringRequestMatchers("bankx/customers/**")
                 )
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/bankx/customers/login", "bankx/customers/onboard/**", "/h2-console/**").permitAll()
+                        .requestMatchers("/bankx/customers/login", "bankx/customers/**", "/h2-console/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .headers(AbstractHttpConfigurer::disable

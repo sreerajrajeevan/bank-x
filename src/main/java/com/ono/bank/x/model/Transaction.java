@@ -18,9 +18,11 @@ public class Transaction {
     private Long id;
 
     private BigDecimal amount;
+    @Column(name = "To_Account")
+    private Long toAccountNumber;
 
     @ManyToOne
-    @JoinColumn(name = "account_id", nullable = false)
+    @JoinColumn(name = "From_Account", nullable = false)
     private Account account;
 
     @Enumerated(EnumType.STRING)
@@ -76,5 +78,13 @@ public class Transaction {
 
     public void setTimestamp(LocalDateTime timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public Long getToAccountNumber() {
+        return toAccountNumber;
+    }
+
+    public void setToAccountNumber(Long toAccountNumber) {
+        this.toAccountNumber = toAccountNumber;
     }
 }

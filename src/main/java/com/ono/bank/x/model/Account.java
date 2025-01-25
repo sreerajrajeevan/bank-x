@@ -18,6 +18,7 @@ import java.util.List;
 public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "Account_Number")
     private Long id;
 
     @Enumerated(EnumType.STRING)
