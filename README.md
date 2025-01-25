@@ -37,9 +37,10 @@ This project is a Spring Boot application developed to address the requirements 
 ## Getting Started
 
 ### Clone the Repository
-```bash
-git clone [repository-url]
-cd bankx-application
+```
+
+git clone https://github.com/sreerajrajeevan/bank-x
+
 ```
 
 ### Build the Application
@@ -50,7 +51,7 @@ mvn clean package
 
 ### Run the Application
 Execute the JAR file generated in the `target` directory:
-```bash
+```
 java -jar target/bankx-application.jar
 ```
 
